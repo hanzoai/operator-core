@@ -21,8 +21,7 @@
 //! carries a non-empty `token` key. Plaintext passwords NEVER live in any
 //! Secret managed by this resolver — only opaque service tokens.
 //!
-//! Generalized from `a downstream operator's iam_admin.rs`. The
-//! liquidity-specific defaults (URL, namespace, secret names) become
+//! Tenant-specific defaults (URL, namespace, secret names) become
 //! constructor parameters on `IamAdminConfig`.
 
 use crate::error::{OperatorError, Result};
@@ -42,10 +41,10 @@ pub const DEFAULT_TOKEN_KEY: &str = "token";
 #[derive(Clone, Debug)]
 pub struct IamAdminConfig {
     /// IAM HTTP API base URL (e.g.
-    /// `http://liquid-iam.liquidity.svc.cluster.local:8000`).
+    /// `http://hanzo-iam.hanzo.svc.cluster.local:8000`).
     pub base_url: String,
     /// Namespace where the admin token Secrets live (typically the operator
-    /// namespace: `liquidity`, `lux-system`, `zoo-system`, etc.).
+    /// namespace: `hanzo`, `lux-system`, `zoo-system`, etc.).
     pub admin_secret_namespace: String,
     /// Ordered list of Secret names to probe. First non-empty match wins.
     /// Typically: `[primary, bootstrap, legacy]` — primary is KMS-synced,
@@ -278,31 +277,31 @@ mod tests {
     #[test]
     fn config_holds_per_operator_defaults() {
         let cfg = IamAdminConfig {
-            base_url: "http://liquid-iam.liquidity.svc.cluster.local:8000".into(),
-            admin_secret_namespace: "liquidity".into(),
+            base_url: "http://hanzo-iam.hanzo.svc.cluster.local:8000".into(),
+            admin_secret_namespace: "hanzo".into(),
             admin_secret_candidates: vec![
-                "liquidity-iam-admin".into(),
-                "liquidity-iam-admin-bootstrap".into(),
+                "hanzo-iam-admin".into(),
+                "hanzo-iam-admin-bootstrap".into(),
                 "iam-service-token".into(),
             ],
         };
         assert_eq!(cfg.admin_secret_candidates.len(), 3);
-        assert_eq!(cfg.admin_secret_candidates[0], "liquidity-iam-admin");
+        assert_eq!(cfg.admin_secret_candidates[0], "hanzo-iam-admin");
     }
 
     #[test]
     fn empty_token_rejected() {
         // Synchronous validation surface before going async.
         let req = UpsertRequest {
-            organization: "liquidity",
-            name: "ats",
-            client_id: "ats",
+            organization: "hanzo",
+            name: "svc",
+            client_id: "svc",
             client_secret: String::new(),
             grant_types: vec!["client_credentials".into()],
             redirect_uris: vec![],
-            display_name: "ATS Settlement",
+            display_name: "Service",
         };
-        assert_eq!(req.organization, "liquidity");
+        assert_eq!(req.organization, "hanzo");
         assert!(req.client_secret.is_empty());
     }
 
@@ -318,7 +317,7 @@ mod tests {
             "duplicate key value violates unique constraint \"application_pkey\""
         ));
         assert!(is_unique_constraint_error(
-            "Error 1062: Duplicate entry 'liquidity-ats' for key 'application.PRIMARY'"
+            "Error 1062: Duplicate entry 'hanzo-svc' for key 'application.PRIMARY'"
         ));
         assert!(!is_unique_constraint_error(
             "internal server error"
@@ -338,9 +337,9 @@ mod tests {
         )
         .await;
         let req = UpsertRequest {
-            organization: "liquidity",
-            name: "liquidity-ats",
-            client_id: "liquidity-ats",
+            organization: "hanzo",
+            name: "hanzo-svc",
+            client_id: "hanzo-svc",
             client_secret: String::new(),
             grant_types: vec!["client_credentials".into()],
             redirect_uris: vec![],
@@ -349,8 +348,8 @@ mod tests {
         let data = upsert_application_at(&mock.base_url, "fake-token", req)
             .await
             .expect("UNIQUE error must be absorbed as soft-success");
-        assert_eq!(data.name, "liquidity-ats");
-        assert_eq!(data.client_id, "liquidity-ats");
+        assert_eq!(data.name, "hanzo-svc");
+        assert_eq!(data.client_id, "hanzo-svc");
         assert!(
             data.client_secret.is_empty(),
             "duplicate path returns empty secret so callers can't accidentally rotate"
@@ -365,9 +364,9 @@ mod tests {
         let mock =
             spawn_static_mock(r#"{"status":"error","msg":"internal server error"}"#).await;
         let req = UpsertRequest {
-            organization: "liquidity",
-            name: "liquidity-ats",
-            client_id: "liquidity-ats",
+            organization: "hanzo",
+            name: "hanzo-svc",
+            client_id: "hanzo-svc",
             client_secret: String::new(),
             grant_types: vec!["client_credentials".into()],
             redirect_uris: vec![],

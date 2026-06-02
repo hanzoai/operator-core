@@ -1,6 +1,6 @@
 //! Standard `status.conditions` helpers for kube-rs CRDs.
 //!
-//! Every CRD in the Hanzo / Lux / Liquidity / Zoo operator family writes the
+//! Every CRD in the Hanzo / Lux / Zoo operator family writes the
 //! same condition shape: `[Synced, Ready]` plus a small set of failure types
 //! (`SyncFailed`, `MissingCredentials`, `Forbidden`, `UnsupportedTransport`,
 //! ...). This module centralises the condition mint helpers so the wire shape
@@ -102,11 +102,11 @@ pub fn ready_false(generation: i64, why: &str, msg: &str) -> Condition {
     }
 }
 
-/// Convergence helpers shared across the lux/liquidity/zoo Rust operators
-/// and the Go port in `~/work/hanzo/operator/internal/controller`. Each
-/// operator surfaces a `phase` field on its network CRD; without these
-/// helpers, every controller re-derives the same `Running | Degraded |
-/// Critical` ladder from scratch and quietly drifts.
+/// Convergence helpers shared across the lux/zoo Rust operators and the
+/// Go port in `~/work/hanzo/operator/internal/controller`. Each operator
+/// surfaces a `phase` field on its network CRD; without these helpers,
+/// every controller re-derives the same `Running | Degraded | Critical`
+/// ladder from scratch and quietly drifts.
 pub mod convergence {
     /// Inputs `is_genuinely_degraded` distinguishes from. The fields are the
     /// minimum signal every network controller already has. Operators with
