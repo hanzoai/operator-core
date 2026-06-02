@@ -1,6 +1,7 @@
 [workspace]
 # Standalone crate — not a member of the parent ~/work/hanzo Cargo workspace.
-# Consumers (~/work/{liquidity,lux,zoo}/operator) depend via `path = ".../operator-core"`.
+# Consumers (~/work/{lux,zoo}/operator and downstream tenant operators)
+# depend via `path = ".../operator-core"`.
 
 [package]
 name = "hanzo-operator-core"
@@ -8,7 +9,7 @@ version = "0.1.0"
 edition = "2021"
 license = "BSD-3-Clause"
 repository = "https://github.com/hanzoai/operator-core"
-description = "Shared reconciler primitives, leader election, IAM admin client, KMS sync, and ZAP transport for Hanzo / Lux / Liquidity / Zoo Kubernetes operators."
+description = "Shared reconciler primitives, leader election, IAM admin client, KMS sync, and ZAP transport for Hanzo / Lux / Zoo Kubernetes operators."
 keywords = ["kubernetes", "operator", "kube", "controller", "kms"]
 
 [dependencies]
