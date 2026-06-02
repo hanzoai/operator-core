@@ -1,12 +1,11 @@
 //! # hanzo-operator-core
 //!
-//! Shared reconciler primitives for the Hanzo, Lux, Liquidity, and Zoo
-//! Kubernetes operator family. The four org operators (`a downstream operator`,
-//! `lux/operator`, `zoo/operator`, and the future Rust port of
-//! `hanzo/operator`) each carry per-org CRDs (`LiquidNetwork`, `LuxNetwork`,
-//! ...) but share ~80% of their controller plumbing — leader election, the
-//! IAM admin upsert client, KMS secret materialisation, status-condition
-//! shape, error type, retry cadence.
+//! Shared reconciler primitives for the Hanzo, Lux, and Zoo Kubernetes
+//! operator family. Each org operator (`lux/operator`, `zoo/operator`,
+//! and the future Rust port of `hanzo/operator`) carries per-org CRDs
+//! (`LuxNetwork`, ...) but shares ~80% of its controller plumbing —
+//! leader election, the IAM admin upsert client, KMS secret
+//! materialisation, status-condition shape, error type, retry cadence.
 //!
 //! This crate is the canonical home for that shared plumbing. Per
 //! `~/.claude/CLAUDE.md`: one and only one way to do everything; forward-only;
@@ -25,15 +24,14 @@
 //!
 //! ## What lives in each operator
 //!
-//! - Per-org CRD types (`LiquidNetwork`, `LuxNetwork`, ...) — kept in each
-//!   operator because the API group is brand-specific
-//!   (`liquid.network`, `lux.network`, `zoo.ngo`, etc.) and the field set
-//!   diverges per platform.
+//! - Per-org CRD types (`LuxNetwork`, ...) — kept in each operator because
+//!   the API group is brand-specific (`hanzo.ai`, `lux.network`,
+//!   `zoo.ngo`, etc.) and the field set diverges per platform.
 //! - The org-specific reconcile bodies for each CRD — they call into this
 //!   crate for leader/IAM/secret/status but own their domain logic.
 //! - The KMSSecret reconciler body itself — the strict hijack guard and
 //!   `\0` rejection live here, but each operator owns its KMS API group
-//!   (`secrets.liquid.network`, `secrets.lux.network`, ...) and wires the
+//!   (`secrets.hanzo.ai`, `secrets.lux.network`, ...) and wires the
 //!   reconciler with the helpers from this crate.
 
 pub mod error;
