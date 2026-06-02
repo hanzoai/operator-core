@@ -5,8 +5,8 @@
 //! 15 seconds.
 //!
 //! Generalized from the byte-identical implementations that previously lived
-//! in `~/work/{liquidity,lux,zoo}/operator/src/leader.rs`. Each operator
-//! configures a unique `lease_name` and `identity_prefix` via `LeaderConfig`.
+//! in `~/work/{lux,zoo}/operator/src/leader.rs`. Each operator configures a
+//! unique `lease_name` and `identity_prefix` via `LeaderConfig`.
 
 use k8s_openapi::api::coordination::v1::{Lease, LeaseSpec};
 use k8s_openapi::apimachinery::pkg::apis::meta::v1::MicroTime;
@@ -23,7 +23,7 @@ const RENEW_INTERVAL_SECS: u64 = 10;
 const RETRY_INTERVAL_SECS: u64 = 15;
 
 /// Per-operator configuration for leader election. Each operator picks a
-/// unique `lease_name` (e.g. `liquid-operator-leader`, `lux-operator-leader`)
+/// unique `lease_name` (e.g. `hanzo-operator-leader`, `lux-operator-leader`)
 /// so multiple operators can coexist in the same cluster without contending
 /// on a single lease.
 #[derive(Clone, Debug)]
@@ -31,7 +31,7 @@ pub struct LeaderConfig {
     /// Lease object name. Must be unique per operator.
     pub lease_name: String,
     /// Identity prefix used when `HOSTNAME` is not set
-    /// (e.g. `liquid-operator-`). The PID is appended.
+    /// (e.g. `hanzo-operator-`). The PID is appended.
     pub identity_prefix: String,
 }
 
