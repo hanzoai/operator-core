@@ -1,7 +1,7 @@
 //! Canonical error type for every operator built on `hanzo-operator-core`.
 //!
 //! Convergence target for the per-org `OperatorError` variants that previously
-//! existed in liquidity/lux/zoo operators. Each variant maps 1:1 to a single
+//! existed in lux/zoo operators. Each variant maps 1:1 to a single
 //! failure domain — no overlap, no wrappers around `Other(String)` for new
 //! cases.
 
