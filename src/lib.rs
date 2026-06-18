@@ -50,6 +50,6 @@ pub use reconciler::{
 };
 pub use secret::{is_operator_managed, owner_ref, validate_secret_value, MANAGED_BY_LABEL};
 pub use status::{
-    convergence, kind, ready_false, ready_true, reason, synced_failed, synced_ok,
-    truncate_message, upsert_condition, CONDITION_MESSAGE_MAX,
+    convergence, kind, ready_false, ready_true, reason, synced_failed, synced_ok, truncate_message,
+    upsert_condition, CONDITION_MESSAGE_MAX,
 };
