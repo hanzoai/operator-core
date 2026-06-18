@@ -63,12 +63,7 @@ pub fn validate_secret_value(value: &[u8]) -> Result<(), String> {
 
 /// Build an `OwnerReference` pointing at a CR. The CR must have a UID set
 /// (i.e. has been created on the API server already).
-pub fn owner_ref(
-    api_version: &str,
-    kind: &str,
-    name: &str,
-    uid: &str,
-) -> OwnerReference {
+pub fn owner_ref(api_version: &str, kind: &str, name: &str, uid: &str) -> OwnerReference {
     OwnerReference {
         api_version: api_version.to_string(),
         kind: kind.to_string(),
