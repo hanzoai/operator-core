@@ -49,9 +49,8 @@ impl LeaderElection {
     /// `HOSTNAME` env var (the pod name in K8s) and falls back to
     /// `<identity_prefix><pid>` for local runs.
     pub fn new(client: Client, namespace: String, config: LeaderConfig) -> Self {
-        let identity = std::env::var("HOSTNAME").unwrap_or_else(|_| {
-            format!("{}{}", config.identity_prefix, std::process::id())
-        });
+        let identity = std::env::var("HOSTNAME")
+            .unwrap_or_else(|_| format!("{}{}", config.identity_prefix, std::process::id()));
 
         LeaderElection {
             is_leader: Arc::new(AtomicBool::new(false)),

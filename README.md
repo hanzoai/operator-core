@@ -1,27 +1,50 @@
-# operator-core (tombstone)
+# operator-core
 
-This crate's contents have been **absorbed into [`hanzoai/operator`](https://github.com/hanzoai/operator)** as the `src/core/` module.
+Shared reconciler primitives for the Hanzo / Lux / Zoo / Osage Kubernetes
+operators. One crate, the load-bearing core that every operator binary
+builds on: leader election, IAM admin client, KMSSecret sync guard,
+status-condition helpers, the requeue reconciler cadence, and the error
+type they all return.
 
-Going forward:
-- The canonical Rust operator (and its core primitives) lives in `~/work/hanzo/operator/src/`.
-- The `src/core/` subdirectory contains the modules that previously lived here: `error.rs`, `leader.rs`, `iam_admin.rs`, `secret.rs`, `status.rs`, `reconciler.rs`.
-- The standalone `hanzoai/operator-core` repo and its `hanzo-operator-core` crate are deprecated.
+```toml
+[dependencies]
+hanzo-operator-core = { git = "https://github.com/hanzoai/operator-core", tag = "v0.2.0" }
+```
 
-## Why
+## Modules
 
-The operator family (Hanzo, Lux, Zoo, Osage) is being unified onto a single Rust operator binary parameterized by API group. Splitting the core primitives into a separate crate that only the operator depends on adds a release-coupling step without buying any reuse — they always shipped together.
+| Module          | Provides |
+|-----------------|----------|
+| `error`         | `OperatorError` + `Result` — the shared error type |
+| `leader`        | `coordination.k8s.io/v1` lease-based leader election loop |
+| `iam_admin`     | `POST /v1/iam/admin/applications/upsert` client (idempotent app upsert) |
+| `secret`        | KMSSecret hijack guard, owner-ref builder, NUL-byte rejection |
+| `status`        | `status.conditions` upsert + truncation + degradation convergence |
+| `reconciler`    | `Action` requeue cadence + `clamp_resync` |
 
-One repo, one binary, one place to look. See [PHILOSOPHY.md](https://raw.githubusercontent.com/hanzoai/.claude/main/agents/PHILOSOPHY.md): "one and only one way to do everything".
+## Consumers
 
-## Downstream consumers (Cargo.toml updates needed)
+| Repo                 | Depends via |
+|----------------------|-------------|
+| `hanzoai/operator`   | vendors the same primitives under `src/core/` (kept in sync) |
+| `zooai/operator`     | git dependency, pinned tag |
 
-Repos that currently depend on `hanzo-operator-core` via path or git ref need a follow-up PR to depend on `hanzoai/operator` directly (or, if they only need a subset of the primitives, they should vendor the relevant module under their own `src/`):
+`zooai/operator` pins `tag = "v0.1.0"` — that tag is immutable and keeps
+resolving regardless of `main`. Bumping to `v0.2.0` is additive; existing
+pins are untouched.
 
-- `~/work/lux/operator`
-- `~/work/zoo/operator`
+`hanzoai/operator`'s `src/core/` and this crate are the same primitives.
+Any change to one must land in the other (they always ship together).
 
-This is out of scope for the absorption commit; coordinate with each repo's maintainer.
+## Build / Test
 
-## Archaeology
+```bash
+cargo build
+cargo test                              # 32 unit tests
+cargo clippy --all-targets -- -D warnings
+cargo fmt --check
+```
 
-The original code is preserved in this repo's git history. The `legacy/go-impl-before-rust-port` branch on `hanzoai/operator` preserves the predecessor Go implementation of the operator itself (before it was ported to Rust + collapsed with this crate).
+## License
+
+BSD-3-Clause.
