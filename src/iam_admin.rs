@@ -133,7 +133,10 @@ pub async fn read_service_token_from(
 /// Resolve the configured IAM admin token using the per-operator
 /// `IamAdminConfig`. Errors when no candidate Secret yields a non-empty
 /// token — IAM bootstrap is blocked.
-pub async fn read_service_token(client: &Client, config: &IamAdminConfig) -> Result<Option<String>> {
+pub async fn read_service_token(
+    client: &Client,
+    config: &IamAdminConfig,
+) -> Result<Option<String>> {
     let candidates: Vec<&str> = config
         .admin_secret_candidates
         .iter()
@@ -189,7 +192,10 @@ pub async fn upsert_application_at(
         "{}/v1/iam/admin/applications/upsert",
         iam_base_url.trim_end_matches('/')
     );
-    debug!("IAM upsert: POST {url} app={}/{}", req.organization, req.name);
+    debug!(
+        "IAM upsert: POST {url} app={}/{}",
+        req.organization, req.name
+    );
 
     let resp = http
         .post(&url)
@@ -319,9 +325,7 @@ mod tests {
         assert!(is_unique_constraint_error(
             "Error 1062: Duplicate entry 'hanzo-svc' for key 'application.PRIMARY'"
         ));
-        assert!(!is_unique_constraint_error(
-            "internal server error"
-        ));
+        assert!(!is_unique_constraint_error("internal server error"));
         assert!(!is_unique_constraint_error(""));
     }
 
@@ -361,8 +365,7 @@ mod tests {
     /// soften the specific INSERT-vs-UPSERT race, never real failures.
     #[tokio::test]
     async fn other_error_response_still_bubbles_up() {
-        let mock =
-            spawn_static_mock(r#"{"status":"error","msg":"internal server error"}"#).await;
+        let mock = spawn_static_mock(r#"{"status":"error","msg":"internal server error"}"#).await;
         let req = UpsertRequest {
             organization: "hanzo",
             name: "hanzo-svc",

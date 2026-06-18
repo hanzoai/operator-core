@@ -170,9 +170,7 @@ pub mod convergence {
     /// `Running | Degraded`. The threshold is two-thirds of the desired
     /// validator count, the same line every operator was already drawing.
     pub fn phase_for(inputs: DegradationInputs) -> &'static str {
-        if inputs.healthy_validators >= inputs.total_validators
-            && !is_genuinely_degraded(inputs)
-        {
+        if inputs.healthy_validators >= inputs.total_validators && !is_genuinely_degraded(inputs) {
             "Running"
         } else {
             "Degraded"
@@ -183,10 +181,7 @@ pub mod convergence {
 /// Replace any existing condition of the same `type_` in `conditions`.
 /// If no condition with that type exists, append.
 pub fn upsert_condition(conditions: &mut Vec<Condition>, new_cond: Condition) {
-    if let Some(slot) = conditions
-        .iter_mut()
-        .find(|c| c.type_ == new_cond.type_)
-    {
+    if let Some(slot) = conditions.iter_mut().find(|c| c.type_ == new_cond.type_) {
         *slot = new_cond;
     } else {
         conditions.push(new_cond);
