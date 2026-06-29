@@ -1,3 +1,5 @@
+<p align="center"><img src=".github/hero.svg" alt="operator-core" width="880"></p>
+
 # operator-core
 
 Shared reconciler primitives for the Hanzo / Lux / Zoo / Osage Kubernetes
