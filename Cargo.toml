@@ -7,7 +7,7 @@
 name = "hanzo-operator-core"
 version = "0.2.0"
 edition = "2021"
-license = "BSD-3-Clause"
+license = "MIT OR Apache-2.0"
 repository = "https://github.com/hanzoai/operator-core"
 description = "Shared reconciler primitives, leader election, IAM admin client, KMS sync, and ZAP transport for Hanzo / Lux / Zoo Kubernetes operators."
 keywords = ["kubernetes", "operator", "kube", "controller", "kms"]
