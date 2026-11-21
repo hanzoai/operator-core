@@ -1,5 +1,7 @@
 # operator-core
 
+[![Open in Hanzo](https://hanzo.app/badges/open-in-hanzo.svg)](https://hanzo.app/dev/open?repo=github.com/hanzoai/operator-core&ref=main&action=open) [![Edit with Hanzo](https://hanzo.app/badges/edit-with-hanzo.svg)](https://hanzo.app/dev/open?repo=github.com/hanzoai/operator-core&ref=main&action=edit)
+
 Shared reconciler primitives for the Hanzo / Lux / Zoo / Osage Kubernetes
 operators. One crate, the load-bearing core that every operator binary
 builds on: leader election, IAM admin client, KMSSecret sync guard,
